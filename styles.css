@@ -1,0 +1,69 @@
+ body {
+     background: linear-gradient(135deg, #050505, #405758, #4b5e64);
+     /* Blue-green gradient */
+     height: 100vh;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+ }
+ 
+ .weather-card {
+     background: rgba(255, 255, 255, 0.15);
+     /* Frosted glass effect */
+     border-radius: 20px;
+     padding: 30px;
+     width: 350px;
+     color: #fff;
+     text-align: center;
+     border: 1px solid rgba(255, 255, 255, 0.2);
+     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+ }
+ 
+ .search-box {
+     display: flex;
+     gap: 10px;
+     margin-bottom: 20px;
+ }
+ 
+ .search-box input {
+     flex: 1;
+     padding: 10px;
+     border-radius: 10px;
+     border: none;
+     outline: none;
+     background: rgba(255, 255, 255, 0.2);
+     color: #fff;
+ }
+ 
+ .search-box input::placeholder {
+     color: #ddd;
+ }
+ 
+ .search-box button {
+     background: #fff;
+     border: none;
+     padding: 10px 15px;
+     border-radius: 10px;
+     cursor: pointer;
+ }
+ 
+ .temp {
+     font-size: 4rem;
+     font-weight: bold;
+     margin: 10px 0;
+ }
+ 
+ body {
+     background-image: url('ThunderStom.png');
+     background-repeat: no-repeat;
+     background-size: cover;
+     background-position: center;
+     background-attachment: fixed;
+ }
+ 
+ .details {
+     display: flex;
+     justify-content: space-between;
+     margin-top: 25px;
+     font-size: 0.9rem;
+ }
