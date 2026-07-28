@@ -1,131 +1,79 @@
-// STEP 1: GET ALL HTML ELEMENTS
-
-// Get location element
-const locationEl = document.getElementsByClassName('location')[0];
-
-// Get temperature element
+// STEP 1 : GETTING HTML ELEMENTS
+const locationEl = document.getElementsByClassName('location');
 const temperatureEl = document.getElementsByClassName('temperature')[0];
-
-// Get condition element
 const conditionEl = document.getElementsByClassName('condition')[0];
-
-// Get weather icon element
 const weatherIcon = document.getElementsByClassName('weather-icon')[0];
-
-// Get all value elements
 const values = document.getElementsByClassName('value');
-
-// First value is humidity
 const humidityValue = values[0];
-
-// Second value is wind speed
 const windValue = values[1];
 
+//STATE LOADING STATE
+if (locationEl) {
+    locationEl.textContent = "Loading...";
+}
+//STEP 2: SETTING AND SENJDING COORDINATE TO API
 
-// STEP 2: LOADING STATE
+// setting coordinates
+const coordinate = {
+        lat: -17.824858,
+        lon: 31.053028
+    }
+    //setting api key
+const apikey = "amveamcuz7sztbw47bskx3l0f1pai6rdr500bds9";
 
-if (locationEl) locationEl.textContent = 'Loading...';
-if (temperatureEl) temperatureEl.textContent = '--°C';
-if (conditionEl) conditionEl.textContent = 'Fetching weather data...';
-if (humidityValue) humidityValue.textContent = '--%';
-if (windValue) windValue.textContent = '-- km/h';
+//built api urlwith coordinates and key
+const apiUrl = `https://www.meteosource.com/api/v1/free/point?lat=-17.825&lon=31.033&sections=current&timezone=Africa/Harare&language=en&units=metric&key=amveamcuz7sztbw47bskx3l0f1pai6rdr500bds9`;
+console.log("Fetching weather from:", apiUrl);
 
-// STEP 3: SEND COORDINATES TO API
+//Sending Request to API
+fetch(apiUrl)
+    .then(response => response.json())
+    .then(data => {
+        console.log("Data parsed from JSON:", data);
 
+        //update temperature
+        document.querySelector(".temperature").textContent =
+            `${data.current.temperature}°C`;
 
-// Coordinates for Harare, Zimbabwe
-const coordinates = {
-    lat: -17.824858,
-    lng: 31.053028
-};
+        //update condition
+        document.querySelector(".condition").textContent =
+            data.current.summary;
 
-// API key for authentication
-const apiKey = "amveamcuz7sztbw47bskx3l0f1pai6rdr500bds9";
+        //update location
+        document.querySelector(".location").textContent =
+            "Harare, Zimbabwe";
 
-// Build API URL with coordinates
-const apiUrl = "https://www.meteosource.com/api/v1/free/point?lat=-17.825&lon=31.033&sections=current&timezone=Africa/Harare&language=en&units=metric&key=amveamcuz7sztbw47bskx3l0f1pai6rdr500bds9`;
-console.log('Fetching weather from:', apiUrl);
+        // Update wind speed
+        document.querySelector(".wind-speed").textContent =
+            `${Math.round(data.current.wind.speed)} km/h`;
 
-// Send request to API
-fetch(apiUrl, {
+        // Update weather icon
+        if (data.current && data.current.icon) {
+            const iconCode = data.current.icon;
 
-    // STEP 4: GET DATA AS JSON FROM API
+            const iconMap = {
+                clear: "☀️",
+                clear_day: "☀️",
+                clear_night: "🌙",
+                cloudy: "☁️",
+                partly_cloudy: "⛅",
+                partly_cloudy_day: "⛅",
+                partly_cloudy_night: "🌤️",
+                rain: "🌧️",
+                snow: "❄️",
+                thunderstorm: "⛈️",
+                fog: "🌫️",
+                wind: "💨"
+            };
 
-    .then(response => {
-        // Checks if request was successful
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        // Convert response to JSON
-        return response.json();
-    })
-    .then(apiData => {
-        console.log("Weather Data Received:", apiData);
-        window.apiRESULT = apiData;
+            const weatherIcon = document.querySelector(".weather-icon");
 
-
-        // STEP 5: UPDATE DISPLAY WITH DATA
-
-        // Update location
-        if (apiData.location) {
-            locationEl.textContent = `${apiData.location.name || 'Harare'}, ${apiData.location.country || 'Zimbabwe'}`;
-        } else {
-            locationEl.textContent = 'Harare, Zimbabwe';
-        }
-
-        // Update temperature
-        if (apiData.current && apiData.current.temperature !== undefined) {
-            const temp = Math.round(apiData.current.temperature);
-            temperatureEl.textContent = `${temp}°C`;
-        }
-
-        // Update condition
-        if (apiData.current) {
-            if (apiData.current.weather) {
-                conditionEl.textContent = apiData.current.weather;
-            } else if (apiData.current.summary) {
-                conditionEl.textContent = apiData.current.summary;
-            } else {
-                conditionEl.textContent = 'Weather data available';
+            if (weatherIcon) {
+                weatherIcon.textContent = iconMap[iconCode] || "🌤️";
             }
         }
 
-        // Update humidity
-        if (apiData.current && apiData.current.humidity !== undefined) {
-            humidityValue.textContent = `${Math.round(apiData.current.humidity)}%`;
-        }
-
-        // Update wind speed
-        if (apiData.current && apiData.current.wind) {
-            const windSpeed = apiData.current.wind.speed || 0;
-            const windUnit = apiData.current.wind.unit || 'km/h';
-            windValue.textContent = `${Math.round(windSpeed)} ${windUnit}`;
-        }
-
-        // Update weather icon
-        if (apiData.current && apiData.current.icon) {
-            const iconCode = apiData.current.icon;
-            const iconMap = {
-                'clear_day': '☀️',
-                'clear_night': '🌙',
-                'cloudy': '☁️',
-                'partly_cloudy_day': '⛅',
-                'partly_cloudy_night': '🌤️',
-                'rain': '🌧️',
-                'snow': '❄️',
-                'thunderstorm': '⛈️',
-                'fog': '🌫️',
-                'wind': '💨'
-            };
-
-            // Get emoji for weather condition
-            const emoji = iconMap[iconCode] || '🌤️';
-
-            // Update icon source
-            weatherIcon.src = `icons/${iconCode}.png`;
-            weatherIcon.alt = emoji;
-
-        };
-
     })
-})
+    .catch(error => {
+        console.error(error);
+    });
