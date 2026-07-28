@@ -21,7 +21,7 @@ const humidityValue = values[0];
 // Second value is wind speed
 const windValue = values[1];
 
-// Get all metric cards (optional)
+// Get all metric cards 
 const metricCards = document.getElementsByClassName('metric-card');
 
 
