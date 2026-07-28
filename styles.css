@@ -54,7 +54,7 @@
  }
  
  body {
-     background-image: url('ThunderStom.png');
+     background-image: url("pictures/snowstorm.png");
      background-repeat: no-repeat;
      background-size: cover;
      background-position: center;
