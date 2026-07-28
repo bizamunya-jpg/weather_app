@@ -43,7 +43,7 @@ const coordinates = {
 const apiKey = "amveamcuz7sztbw47bskx3l0f1pai6rdr500bds9";
 
 // Build API URL with coordinates
-const apiUrl = `[{"https://www.meteosource.com/api/v1/free/point?lat=-17.825&lon=31.033&sections=current&timezone=Africa/Harare&language=en&units=metric&key=amveamcuz7sztbw47bskx3l0f1pai6rdr500bds9`;
+const apiUrl = "https://www.meteosource.com/api/v1/free/point?lat=-17.825&lon=31.033&sections=current&timezone=Africa/Harare&language=en&units=metric&key=amveamcuz7sztbw47bskx3l0f1pai6rdr500bds9`;
 console.log('Fetching weather from:', apiUrl);
 
 // Send request to API
