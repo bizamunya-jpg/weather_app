@@ -7,10 +7,7 @@ const values = document.getElementsByClassName('value');
 const humidityValue = values[0];
 const windValue = values[1];
 
-//STATE LOADING STATE
-if (locationEl) {
-    locationEl.textContent = "Loading...";
-}
+
 //STEP 2: SETTING AND SENJDING COORDINATE TO API
 
 // setting coordinates
@@ -27,9 +24,13 @@ console.log("Fetching weather from:", apiUrl);
 
 //Sending Request to API
 fetch(apiUrl)
+    // STEP 3: GET DATA AS JSON FROM API
     .then(response => response.json())
     .then(data => {
         console.log("Data parsed from JSON:", data);
+
+
+        // STEP 4: UPDATE DISPLAY WITH DATA
 
         //update temperature
         document.querySelector(".temperature").textContent =
