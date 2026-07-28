@@ -1,4 +1,4 @@
-// STEP 1: GET HTML ELEMENTS
+// STEP 1: GET ALL HTML ELEMENTS
 
 // Get location element
 const locationEl = document.getElementsByClassName('location')[0];
@@ -21,11 +21,16 @@ const humidityValue = values[0];
 // Second value is wind speed
 const windValue = values[1];
 
-// Get all metric cards 
-const metricCards = document.getElementsByClassName('metric-card');
 
+// STEP 2: LOADING STATE
 
-// STEP 2: SEND COORDINATES TO API
+if (locationEl) locationEl.textContent = 'Loading...';
+if (temperatureEl) temperatureEl.textContent = '--°C';
+if (conditionEl) conditionEl.textContent = 'Fetching weather data...';
+if (humidityValue) humidityValue.textContent = '--%';
+if (windValue) windValue.textContent = '-- km/h';
+
+// STEP 3: SEND COORDINATES TO API
 
 
 // Coordinates for Harare, Zimbabwe
@@ -38,98 +43,89 @@ const coordinates = {
 const apiKey = "amveamcuz7sztbw47bskx3l0f1pai6rdr500bds9";
 
 // Build API URL with coordinates
-const apiUrl = `https://www.meteosource.com/api/v1/free/point?lat=${coordinates.lat}&lng=${coordinates.lng}`;
+const apiUrl = `[{"https://www.meteosource.com/api/v1/free/point?lat=-17.825&lon=31.033&sections=current&timezone=Africa/Harare&language=en&units=metric&key=amveamcuz7sztbw47bskx3l0f1pai6rdr500bds9`;
+console.log('Fetching weather from:', apiUrl);
 
 // Send request to API
 fetch(apiUrl, {
-    method: "GET",
-    headers: {
-        "Authorization": `Bearer ${apiKey}`
-    }
-})
 
-// STEP 3: GET DATA AS JSON FROM API
+    // STEP 4: GET DATA AS JSON FROM API
 
-// Process the response
-.then(response => {
-    // Checks if request was successful
-    if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-    // Convert response to JSON
-    return response.json();
-})
-
-// STEP 4: GRABING THE DATA WE WANT FROM RESPONSE
+    .then(response => {
+        // Checks if request was successful
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        // Convert response to JSON
+        return response.json();
+    })
+    .then(apiData => {
+        console.log("Weather Data Received:", apiData);
+        window.apiRESULT = apiData;
 
 
-// Extract specific data from API response
-.then(apiData => {
-    // Location data
-    const cityName = apiData.location.name;
-    const countryName = apiData.location.country;
+        // STEP 5: UPDATE DISPLAY WITH DATA
 
+        // Update location
+        if (apiData.location) {
+            locationEl.textContent = `${apiData.location.name || 'Harare'}, ${apiData.location.country || 'Zimbabwe'}`;
+        } else {
+            locationEl.textContent = 'Harare, Zimbabwe';
+        }
 
-    // Temperature data
-    const temperature = apiData.current.temperature;
-    const roundedTemp = Math.round(temperature);
+        // Update temperature
+        if (apiData.current && apiData.current.temperature !== undefined) {
+            const temp = Math.round(apiData.current.temperature);
+            temperatureEl.textContent = `${temp}°C`;
+        }
 
-    // Weather condition
-    const weatherCondition = apiData.current.weather;
+        // Update condition
+        if (apiData.current) {
+            if (apiData.current.weather) {
+                conditionEl.textContent = apiData.current.weather;
+            } else if (apiData.current.summary) {
+                conditionEl.textContent = apiData.current.summary;
+            } else {
+                conditionEl.textContent = 'Weather data available';
+            }
+        }
 
-    // Humidity data
-    const humidity = apiData.current.humidity;
-    const roundedHumidity = Math.round(humidity);
+        // Update humidity
+        if (apiData.current && apiData.current.humidity !== undefined) {
+            humidityValue.textContent = `${Math.round(apiData.current.humidity)}%`;
+        }
 
-    // Wind speed data
-    const windSpeed = apiData.current.wind.speed;
-    const windUnit = apiData.current.wind.unit;
-    const roundedWind = Math.round(windSpeed);
+        // Update wind speed
+        if (apiData.current && apiData.current.wind) {
+            const windSpeed = apiData.current.wind.speed || 0;
+            const windUnit = apiData.current.wind.unit || 'km/h';
+            windValue.textContent = `${Math.round(windSpeed)} ${windUnit}`;
+        }
 
-    // Icon data
-    const iconCode = apiData.current.icon;
+        // Update weather icon
+        if (apiData.current && apiData.current.icon) {
+            const iconCode = apiData.current.icon;
+            const iconMap = {
+                'clear_day': '☀️',
+                'clear_night': '🌙',
+                'cloudy': '☁️',
+                'partly_cloudy_day': '⛅',
+                'partly_cloudy_night': '🌤️',
+                'rain': '🌧️',
+                'snow': '❄️',
+                'thunderstorm': '⛈️',
+                'fog': '🌫️',
+                'wind': '💨'
+            };
 
-    // STEP 5: SET DATA TO HTML ELEMENTS
+            // Get emoji for weather condition
+            const emoji = iconMap[iconCode] || '🌤️';
 
-    // Update location
-    locationEl.textContent = `${cityName}, ${countryName}`;
+            // Update icon source
+            weatherIcon.src = `icons/${iconCode}.png`;
+            weatherIcon.alt = emoji;
 
+        };
 
-    // Update temperature
-    temperatureEl.textContent = `${roundedTemp}°C`;
-
-
-    // Update condition
-    conditionEl.textContent = weatherCondition;
-
-
-    // Update humidity
-    humidityValue.textContent = `${roundedHumidity}%`;
-
-
-    // Update wind speed
-    windValue.textContent = `${roundedWind} ${windUnit}`;
-
-
-    // Update weather icon
-    const iconMap = {
-        'clear_day': '☀️',
-        'clear_night': '🌙',
-        'cloudy': '☁️',
-        'partly_cloudy_day': '⛅',
-        'partly_cloudy_night': '🌤️',
-        'rain': '🌧️',
-        'snow': '❄️',
-        'thunderstorm': '⛈️',
-        'fog': '🌫️',
-        'wind': '💨'
-    };
-
-    // Get emoji for weather condition
-    const weatherEmoji = iconMap[iconCode] || '🌤️';
-
-    // Update icon source
-    weatherIcon.src = `icons/${iconCode}.png`;
-    weatherIcon.alt = weatherEmoji;
-
+    })
 })
