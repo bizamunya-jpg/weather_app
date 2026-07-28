@@ -137,19 +137,3 @@ fetch(apiUrl, {
                     this.src = `data:image/svg+xml,${encodeURIComponent(`<svg>${weatherEmoji}</svg>`)}`;
     };
 })
-
-
-// ERROR HANDLING
-
-// Catch any errors
-.catch(error => {
-    // Log error to console
-    console.error("❌ API CALL FAILED:", error);
-    
-    // Show error in HTML
-    locationEl.textContent = '❌ Error';
-    conditionEl.textContent = 'Could not load weather data';
-    temperatureEl.textContent = '--°C';
-    humidityValue.textContent = '--%';
-    windValue.textContent = '-- km/h';
-});
