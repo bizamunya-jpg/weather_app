@@ -52,7 +52,7 @@ fetch(apiUrl, {
 
 // Process the response
 .then(response => {
-    // Check if request was successful
+    // Checks if request was successful
     if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
     }
@@ -60,80 +60,76 @@ fetch(apiUrl, {
     return response.json();
 })
 
-// STEP 4: GRAB THE DATA WE WANT FROM RESPONSE
+// STEP 4: GRABING THE DATA WE WANT FROM RESPONSE
 
 
 // Extract specific data from API response
 .then(apiData => {
-            // Location data
-            const cityName = apiData.location.name;
-            const countryName = apiData.location.country;
+    // Location data
+    const cityName = apiData.location.name;
+    const countryName = apiData.location.country;
 
 
-            // Temperature data
-            const temperature = apiData.current.temperature;
-            const roundedTemp = Math.round(temperature);
+    // Temperature data
+    const temperature = apiData.current.temperature;
+    const roundedTemp = Math.round(temperature);
 
-            // Weather condition
-            const weatherCondition = apiData.current.weather;
+    // Weather condition
+    const weatherCondition = apiData.current.weather;
 
-            // Humidity data
-            const humidity = apiData.current.humidity;
-            const roundedHumidity = Math.round(humidity);
+    // Humidity data
+    const humidity = apiData.current.humidity;
+    const roundedHumidity = Math.round(humidity);
 
-            // Wind speed data
-            const windSpeed = apiData.current.wind.speed;
-            const windUnit = apiData.current.wind.unit;
-            const roundedWind = Math.round(windSpeed);
+    // Wind speed data
+    const windSpeed = apiData.current.wind.speed;
+    const windUnit = apiData.current.wind.unit;
+    const roundedWind = Math.round(windSpeed);
 
-            // Icon data
-            const iconCode = apiData.current.icon;
+    // Icon data
+    const iconCode = apiData.current.icon;
 
-            // STEP 5: SET DATA TO HTML ELEMENTS
+    // STEP 5: SET DATA TO HTML ELEMENTS
 
-            // Update location
-            locationEl.textContent = `${cityName}, ${countryName}`;
-
-
-            // Update temperature
-            temperatureEl.textContent = `${roundedTemp}°C`;
+    // Update location
+    locationEl.textContent = `${cityName}, ${countryName}`;
 
 
-            // Update condition
-            conditionEl.textContent = weatherCondition;
+    // Update temperature
+    temperatureEl.textContent = `${roundedTemp}°C`;
 
 
-            // Update humidity
-            humidityValue.textContent = `${roundedHumidity}%`;
+    // Update condition
+    conditionEl.textContent = weatherCondition;
 
 
-            // Update wind speed
-            windValue.textContent = `${roundedWind} ${windUnit}`;
+    // Update humidity
+    humidityValue.textContent = `${roundedHumidity}%`;
 
 
-            // Update weather icon
-            const iconMap = {
-                'clear_day': '☀️',
-                'clear_night': '🌙',
-                'cloudy': '☁️',
-                'partly_cloudy_day': '⛅',
-                'partly_cloudy_night': '🌤️',
-                'rain': '🌧️',
-                'snow': '❄️',
-                'thunderstorm': '⛈️',
-                'fog': '🌫️',
-                'wind': '💨'
-            };
+    // Update wind speed
+    windValue.textContent = `${roundedWind} ${windUnit}`;
 
-            // Get emoji for weather condition
-            const weatherEmoji = iconMap[iconCode] || '🌤️';
 
-            // Update icon source
-            weatherIcon.src = `icons/${iconCode}.png`;
-            weatherIcon.alt = weatherEmoji;
-
-            // Fallback if image doesn't load
-            weatherIcon.onerror = function() {
-                    this.src = `data:image/svg+xml,${encodeURIComponent(`<svg>${weatherEmoji}</svg>`)}`;
+    // Update weather icon
+    const iconMap = {
+        'clear_day': '☀️',
+        'clear_night': '🌙',
+        'cloudy': '☁️',
+        'partly_cloudy_day': '⛅',
+        'partly_cloudy_night': '🌤️',
+        'rain': '🌧️',
+        'snow': '❄️',
+        'thunderstorm': '⛈️',
+        'fog': '🌫️',
+        'wind': '💨'
     };
+
+    // Get emoji for weather condition
+    const weatherEmoji = iconMap[iconCode] || '🌤️';
+
+    // Update icon source
+    weatherIcon.src = `icons/${iconCode}.png`;
+    weatherIcon.alt = weatherEmoji;
+
 })
